@@ -3,11 +3,11 @@ package com.example.hellomyapplication;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +22,7 @@ public class Tab1TextAdapter extends RecyclerView.Adapter<Tab1TextAdapter.ViewHo
     // 아이템 뷰를 저장하는 뷰홀더 클래스.
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView name,phonenum ;
+        ImageView profile;
 
         ViewHolder(View itemView) {
             super(itemView) ;
@@ -29,6 +30,7 @@ public class Tab1TextAdapter extends RecyclerView.Adapter<Tab1TextAdapter.ViewHo
             // 뷰 객체에 대한 참조. (hold strong reference)
             name = itemView.findViewById(R.id.name) ;
             phonenum = itemView.findViewById(R.id.phonenum) ;
+            profile=itemView.findViewById(R.id.profile);
 //            itemView.setOnClickListener(new View.onClickListener(){
 //                @Override
 //                public void onClick(View v){
@@ -101,6 +103,7 @@ class PhoneBook{
     private String id;
     private String name;
     private String number;
+    private
 
     public String getId() {
         return id;

@@ -17,11 +17,15 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="580dp">
 
 
                 <LinearLayout
@@ -33,7 +37,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="580dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:overScrollMode="never"
@@ -47,7 +51,7 @@
                 <LinearLayout
                     android:id="@+id/gallery"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -62,17 +66,13 @@
                 <LinearLayout
                     android:id="@+id/special"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
 
                 </LinearLayout>
             </FrameLayout>
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </TabHost>
