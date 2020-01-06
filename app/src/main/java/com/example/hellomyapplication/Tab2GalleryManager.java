@@ -8,7 +8,7 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.example.tabtwo.PhotoVO;
+
 
 public class Tab2GalleryManager { //사진정보를 가져옴
     private Context mContext;
@@ -24,8 +24,10 @@ public class Tab2GalleryManager { //사진정보를 가져옴
 
         ArrayList<com.example.hellomyapplication.Tab2PhotoVO> photoList = new ArrayList<>();
 
+        // TODO: (이하의 코드는 로컬 저장소에서 사진받아옴) 안드로이드 시스템 말고 DB&서버로 받아올것
+
         Uri uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        // 안드로이스 시스템에서 제공하는 미디어 데이터 DB
+        // 안드로이드 시스템에서 제공하는 미디어 데이터 DB
 
         String[] projection = {
                 MediaStore.MediaColumns.DATA,

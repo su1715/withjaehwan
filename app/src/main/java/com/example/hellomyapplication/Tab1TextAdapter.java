@@ -30,7 +30,8 @@ public class Tab1TextAdapter extends RecyclerView.Adapter<Tab1TextAdapter.ViewHo
             // 뷰 객체에 대한 참조. (hold strong reference)
             name = itemView.findViewById(R.id.name) ;
             phonenum = itemView.findViewById(R.id.phonenum) ;
-            profile=itemView.findViewById(R.id.profile);
+            profile=(ImageView) itemView.findViewById(R.id.profile);
+
 //            itemView.setOnClickListener(new View.onClickListener(){
 //                @Override
 //                public void onClick(View v){
@@ -67,6 +68,7 @@ public class Tab1TextAdapter extends RecyclerView.Adapter<Tab1TextAdapter.ViewHo
         final PhoneBook phoneBook = mData.get(position);
         holder.name.setText(phoneBook.getName());
         holder.phonenum.setText(phoneBook.getNumber());
+        holder.profile.setImageResource(phoneBook.getImageNumber());
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) holder.itemView.getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -103,7 +105,7 @@ class PhoneBook{
     private String id;
     private String name;
     private String number;
-    private
+    private int imageNumber;
 
     public String getId() {
         return id;
@@ -117,6 +119,8 @@ class PhoneBook{
         return number;
     }
 
+    public int getImageNumber(){ return imageNumber; }
+
     public void setNumber(String number) {
         this.number = number;
     }
@@ -129,10 +133,16 @@ class PhoneBook{
         this.id = id;
     }
 
-    PhoneBook(String id, String name, String number){
+    public void setImageNumber(int imageNumber){
+        this.imageNumber=imageNumber;
+    }
+
+
+    PhoneBook(String id, String name, String number,int imageNumber){
         this.id=id;
         this.name=name;
         this.number=number;
+        this.imageNumber=imageNumber;
     }
     PhoneBook(){
 

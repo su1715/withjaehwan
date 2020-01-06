@@ -38,21 +38,6 @@ public class Tab2GalleryAdapter extends RecyclerView.Adapter<Tab2GalleryAdapter.
             imgPhoto = (ImageView) itemView.findViewById(R.id.imgPhoto);
             layoutSelect = (RelativeLayout) itemView.findViewById(R.id.layoutSelect);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int pos = getAdapterPosition() ;
-//                    if (pos != RecyclerView.NO_POSITION) {
-//                        mData.set(pos, "item clicked. pos=" + pos) ;
-//
-//                        notifyItemChanged(pos) ;
-//                    }
-//                }
-//            });
-//
-//
-
-
         }
 
     }
@@ -123,7 +108,7 @@ public class Tab2GalleryAdapter extends RecyclerView.Adapter<Tab2GalleryAdapter.
 
 
     /**
-     * 레이아웃을 만들어서 Holer에 저장
+     * 레이아웃을 만들어서 Holder에 저장
      *
      * @param viewGroup
      * @param viewType
