@@ -14,6 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Login extends AppCompatActivity {
     EditText email;
     EditText pwd;
@@ -58,20 +69,22 @@ public class Login extends AppCompatActivity {
             public void onClick(View view){
                 emailText=email.getText().toString();
                 pwdText=pwd.getText().toString();
-                Context context=view.getContext();
-                if(true){ // TODO: if 조건= emailText와 pwdText가 서버에 저장된 정보와 일치하는지 확인
-                    intent=new Intent(getApplicationContext(),MainActivity.class);
-                    intent.putExtra("email",emailText);
-                    intent.putExtra("password",pwdText);
-                    startActivity(intent);
-                }
-                else{
-                    Toast toast=Toast.makeText(context,"이메일 혹은 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT);
-                }
+                requestLogin(emailText, pwdText);
+//                Context context=view.getContext();
+//                if(true){ // TODO: if 조건= emailText와 pwdText가 서버에 저장된 정보와 일치하는지 확인
+//                    intent=new Intent(getApplicationContext(),MainActivity.class);
+//                    intent.putExtra("email",emailText);
+//                    intent.putExtra("password",pwdText);
+//                    startActivity(intent);
+//                }
+//                else{
+//                    Toast toast=Toast.makeText(context,"이메일 혹은 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT);
+//                }
 
             }
 
         });
+
 
         //회원가입
         signup_loginpg.setOnClickListener(new Button.OnClickListener(){
@@ -84,6 +97,70 @@ public class Login extends AppCompatActivity {
 
 
     }
+
+    public void requestLogin(String ID, String PW){
+        /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
+        String url = "http://e655d0bf.ngrok.io/infos/login/local";
+
+        //JSON형식으로 데이터 통신을 진행합니다!
+
+        JSONObject testjson = new JSONObject();
+        try {
+            //입력해둔 edittext의 id와 pw값을 받아와 put해줍니다 : 데이터를 json형식으로 바꿔 넣어주었습니다.
+
+            testjson.put("email", ID);
+            testjson.put("password", PW);
+            String jsonString = testjson.toString(); //완성된 json 포맷
+
+            //이제 전송해볼까요?
+            final RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
+            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,testjson, new Response.Listener<JSONObject>() {
+
+                //데이터 전달을 끝내고 이제 그 응답을 받을 차례입니다.
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        //받은 json형식의 응답을 받아
+                        JSONObject jsonObject = new JSONObject(response.toString());
+
+                        //key값에 따라 value값을 쪼개 받아옵니다.
+                        String resultId = jsonObject.getString("approve_id");
+                        String resultPassword = jsonObject.getString("approve_pw");
+
+                        if(resultId.equals("OK") & resultPassword.equals("OK")){
+                            Toast.makeText(getApplicationContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
+                            intent=new Intent(getApplicationContext(),MainActivity.class);
+                            intent.putExtra("email",emailText);
+                            intent.putExtra("password",pwdText);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            easyToast("이메일이나 비밀번호가 일치하지 않습니다.");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                //서버로 데이터 전달 및 응답 받기에 실패한 경우 아래 코드가 실행됩니다.
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(jsonObjectRequest);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void easyToast(String str){
+        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
+    }
+
 
 
 }
