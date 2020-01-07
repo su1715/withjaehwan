@@ -25,6 +25,7 @@ public class Signup extends AppCompatActivity {
     Button signupBtn,cancelBtn;
     String emailString,pwdString,pwdvfString;
     Intent intent_login;
+    ngrok addr = new ngrok();
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class Signup extends AppCompatActivity {
 
     public void register(String ID, String PW){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
-        String url = "http://e2e2477f.ngrok.io/infos/login/register";
+        String url = addr.geturl() + "/infos/login/register";
 
         //JSON형식으로 데이터 통신을 진행합니다!
 

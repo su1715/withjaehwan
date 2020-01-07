@@ -4,9 +4,16 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.FileUriExposedException;
+import android.os.FileUtils;
 import android.provider.ContactsContract;
+import android.util.Base64;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -32,6 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerGallery;
     private Tab2GalleryAdapter galleryAdapter;
     RecyclerView recyclerView;
+    ngrok addr = new ngrok();
 
 
     @Override
@@ -51,16 +61,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO: 서버에 local phonebook(id, name, phonenum, imageNumber), gallery 저장하기
-        phonetoServer=Loader.getData(this);
+        phonetoServer=Loader.getData(this); //Uploading!
         String key = getIntent().getStringExtra("key");
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
-        String url = "http://e2e2477f.ngrok.io/contacts/private/books";
+        String url = addr.geturl() + "/contacts/private/books";
         for(int i =0; i<phonetoServer.size();i++){
             final JSONObject jsonkey = new JSONObject();
                 try {
                     jsonkey.put("contactid", key);
                     jsonkey.put("name",phonetoServer.get(i).getName());
                     jsonkey.put("phonenumber",phonetoServer.get(i).getNumber());
+//                    Bitmap temp = loadBackgroundBitmap(this,phonetoServer.get(i).getImageNumber());
                     final RequestQueue requestQueue = Volley.newRequestQueue(this);
                     final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,jsonkey, new Response.Listener<JSONObject>() {
                         //데이터 전달을 끝내고 이제 그 응답을 받을 차례입니다.
@@ -87,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
         phoneBooks=new ArrayList<>();
-        String url2 = "http://e2e2477f.ngrok.io/contacts/contactid/"+key;
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        String url2 = addr.geturl() + "/contacts/contactid/"+key;
+        RequestQueue requestQueue = Volley.newRequestQueue(this);  //downloading!!
         // Initialize a new JsonArrayRequest instance
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -163,6 +174,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public static Bitmap loadBackgroundBitmap(Context context, String imgFilePath) throws Exception, OutOfMemoryError{
+        if(false){
+            throw new FileNotFoundException("background-image file not found : " + imgFilePath);
+        }
+
+        Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int displayWidth = display.getWidth();
+        int displayHeight = display.getHeight();
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imgFilePath, options);
+
+        float widthScale = options.outWidth / displayWidth;
+        float heightScale = options.outHeight / displayHeight;
+        float scale = widthScale > heightScale ? widthScale : heightScale;
+
+        if (scale >= 8){
+            options.inSampleSize = 8;
+        }else if (scale >= 6){
+            options.inSampleSize = 6;
+        }else if (scale >= 4){
+            options.inSampleSize = 4;
+        }else if (scale >= 2){
+            options.inSampleSize = 2;
+        }else{
+            options.inSampleSize = 1;
+        }
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imgFilePath, options);
+    } //Url을 Bitmap으로!
+    private String getStringFromBitmap(Bitmap bitmapPicture) {
+        String encodedImage;
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        bitmapPicture.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+        return encodedImage;
+    } //bitmap을 Bytecode로 쪼개기
 
 
 
@@ -288,10 +339,4 @@ class Loader{
         return datas;
     }
 }
-<<<<<<< HEAD
 
-
-
-
-=======
->>>>>>> 3c9486c1c3afb16a0a075dfaf853e5aed51d0a4c

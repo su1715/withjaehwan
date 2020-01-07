@@ -35,6 +35,7 @@ public class Login extends AppCompatActivity {
     String key;
     Intent intent;
     Intent intent_signup;
+    ngrok addr = new ngrok();
     @Override
     protected void onCreate(Bundle savedInstanceState){
         //TODO: 권한 허용 하나로 묻기 (by수정)
@@ -91,7 +92,7 @@ public class Login extends AppCompatActivity {
 
     public void requestLogin(String ID, String PW){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
-        String url = "http://e2e2477f.ngrok.io/infos/login/local";
+        String url = addr.geturl() + "/infos/login/local";
 
         //JSON형식으로 데이터 통신을 진행합니다!
 
