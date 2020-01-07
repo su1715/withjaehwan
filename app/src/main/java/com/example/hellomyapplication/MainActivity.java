@@ -1,7 +1,12 @@
 package com.example.hellomyapplication;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.widget.TabHost;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Tab2GalleryManager mGalleryManager;
     private RecyclerView recyclerGallery;
     private Tab2GalleryAdapter galleryAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,22 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec ts3=tabHost1.newTabSpec("Tab Spec 3");
         ts3.setContent(R.id.special);
-        ts3.setIndicator("Special");
+        ts3.setIndicator("Special").setContent(new Intent(this,Tab3Main.class));
         tabHost1.addTab(ts3);
 
 
     }
 
 
-
-
-    //tab2필요한 부분
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) { //이게 뭘까?
-//
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
 
 
     /**
@@ -171,4 +168,43 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+}
+class Loader{
+    public static ArrayList<PhoneBook> getData(Context context){
+        ArrayList<PhoneBook> datas=new ArrayList<>();
+        ContentResolver resolver=context.getContentResolver();
+        Uri phoneUri= ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String proj[]={ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER};
+        String sortOrder="case"+
+                " when substr(" + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+", 1,1) BETWEEN 'ㄱ' AND '힣' then 1 "+
+                " when substr(" + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+", 1,1) BETWEEN 'A' AND 'Z' then 2 "+
+                " when substr(" + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+", 1,1) BETWEEN 'a' AND 'z' then 3 "+
+                " else 4 end, " + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" COLLATE LOCALIZED ASC";
+        Cursor cursor=resolver.query(phoneUri,proj,null,null,sortOrder);
+        if(cursor!=null){
+            while(cursor.moveToNext()){
+                int index=cursor.getColumnIndex(proj[0]);
+                String id=cursor.getString(index);
+
+                index=cursor.getColumnIndex(proj[1]);
+                String name=cursor.getString(index);
+
+                index=cursor.getColumnIndex(proj[2]);
+                String number=cursor.getString(index);
+
+
+                PhoneBook book=new PhoneBook();
+                book.setId(id);
+                book.setName(name);
+                book.setNumber(number);
+
+                datas.add(book);
+
+            }
+        }
+        cursor.close();
+        return datas;
+    }
 }

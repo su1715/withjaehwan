@@ -44,6 +44,7 @@ public class Login extends AppCompatActivity {
                         1);
             }
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
 
