@@ -162,7 +162,6 @@ public class Tab3InputInfo extends AppCompatActivity {
         @Override
         public void onFinish() {
             if(info_1.length()!=0 && info_2.length()!=0 && info_3.length()!=0 && info_4.length()!=0 && name_info.length()!=0) {
-                easyToast("잘하고이썽요"+ans);
                 getready(info_1,info_2,info_3,info_4,name_info,key,ans);
             }
             else{
