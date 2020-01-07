@@ -2,6 +2,8 @@ package com.example.hellomyapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,8 +30,8 @@ public class Tab3InputInfo extends AppCompatActivity {
     Button inputEnd;
     Intent intentToStart;
     String key = ((MainActivity)MainActivity.context).globalkey;
+    int ans = 0;
     ngrok addr = new ngrok();
-    int myturn;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab3_input_info);
@@ -50,14 +52,9 @@ public class Tab3InputInfo extends AppCompatActivity {
                 info_3=info3.getText().toString();
                 info_4=info4.getText().toString();
                 name_info=nameinfo.getText().toString();
-                int order = getorder();
-                if(info_1.length()!=0 && info_2.length()!=0 && info_3.length()!=0 && info_4.length()!=0 && name_info.length()!=0) {
-                    getready(info_1,info_2,info_3,info_4,name_info,key,order);
-                }
-                else{
-                    Toast toast=Toast.makeText(view.getContext(),"정보를 모두 입력해주세요.",Toast.LENGTH_LONG);
-                    toast.show();
-                }
+                MyTimer timer = new MyTimer(2000,2000);
+
+
             }
         });
 
@@ -66,7 +63,7 @@ public class Tab3InputInfo extends AppCompatActivity {
     }
     public void getready(String info1, String info2,String info3,String info4,String name,String key,int order){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
-        String url = addr.geturl() + "/gamedbs";
+        String url = addr.geturl() + "/games";
 
         //JSON형식으로 데이터 통신을 진행합니다!
 
@@ -79,7 +76,9 @@ public class Tab3InputInfo extends AppCompatActivity {
             testjson.put("hint2", info2);
             testjson.put("hint3", info3);
             testjson.put("hint4", info4);
-
+            testjson.put("mynum", order);
+            testjson.put("tnum", order);
+            testjson.put("cnum", (order+1)%6);
             //이제 전송해볼까요?
             final RequestQueue requestQueue = Volley.newRequestQueue(Tab3InputInfo.this);
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,testjson, new Response.Listener<JSONObject>() {
@@ -90,7 +89,6 @@ public class Tab3InputInfo extends AppCompatActivity {
                     try {
                         //받은 json형식의 응답을 받아
                         intentToStart = new Intent(getApplicationContext(), Tab3GameStart.class);
-                        intentToStart.putExtra("name",name_info);
                         startActivity(intentToStart);
 
                     } catch (Exception e) {
@@ -111,7 +109,7 @@ public class Tab3InputInfo extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public int getorder(){
+    public void getorder(){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
         String url = addr.geturl() + "/games";
         RequestQueue requestQueue = Volley.newRequestQueue(this);  //downloading!!
@@ -122,7 +120,14 @@ public class Tab3InputInfo extends AppCompatActivity {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        myturn = response.length();
+                        try {
+                            for(int i=0;i<response.length();i++){
+                                JSONObject temp = response.getJSONObject(i);
+                                ans += 1;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener(){
@@ -134,11 +139,36 @@ public class Tab3InputInfo extends AppCompatActivity {
         );
         jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonArrayRequest);
-        return myturn;
     }
 
     void easyToast(String str){
         Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
     }
+    class MyTimer extends CountDownTimer
+    {
+        int order=0;
+        public MyTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+            this.start();
 
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            getorder();
+        }
+
+        @Override
+        public void onFinish() {
+            if(info_1.length()!=0 && info_2.length()!=0 && info_3.length()!=0 && info_4.length()!=0 && name_info.length()!=0) {
+                easyToast("잘하고이썽요"+ans);
+                getready(info_1,info_2,info_3,info_4,name_info,key,ans);
+            }
+            else{
+                easyToast("정보를 모두 입력해주세요");
+            }
+        }
+    }
 }
+
