@@ -164,12 +164,6 @@ public class Tab3GameStart extends AppCompatActivity {
             else{
 
                 myCheck=new Check();//TODO: 서버에서 불러온 내 정보 업데이트
-<<<<<<< HEAD
-                //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 info를 가져와서 세팅
-=======
-                //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 Info를 가져와서 InfoText1~4 세팅
-                setImage();
->>>>>>> 57c9e6780cde1602e82e834cdef6a05e4261e032
 
             }
 
@@ -178,10 +172,6 @@ public class Tab3GameStart extends AppCompatActivity {
         @Override
         public void onFinish() {
             if (checknum==1){
-<<<<<<< HEAD
-=======
-
->>>>>>> 57c9e6780cde1602e82e834cdef6a05e4261e032
                 p_num_info.setVisibility(View.GONE);
                 p_num_info2.setVisibility(View.GONE);
                 arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
