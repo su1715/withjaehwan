@@ -10,8 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Tab3InputInfo extends AppCompatActivity {
-    EditText info1,info2,info3,info4;
-    String info_1,info_2,info_3,info_4;
+    EditText info1,info2,info3,info4,nameinfo;
+    String info_1,info_2,info_3,info_4,name_info;
     Button inputEnd;
     Intent intentToStart;
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +21,7 @@ public class Tab3InputInfo extends AppCompatActivity {
         info2=(EditText)findViewById(R.id.info2);
         info3=(EditText)findViewById(R.id.info3);
         info4=(EditText)findViewById(R.id.info4);
+        nameinfo=(EditText)findViewById(R.id.nameinfo);
         inputEnd=(Button)findViewById(R.id.inputEnd);
 
 
@@ -32,13 +33,15 @@ public class Tab3InputInfo extends AppCompatActivity {
                 info_2=info2.getText().toString();
                 info_3=info3.getText().toString();
                 info_4=info4.getText().toString();
-                if(info_1.length()!=0 && info_2.length()!=0 && info_3.length()!=0 && info_4.length()!=0) {
+                name_info=nameinfo.getText().toString();
+                if(info_1.length()!=0 && info_2.length()!=0 && info_3.length()!=0 && info_4.length()!=0 && name_info.length()!=0) {
 
-
+                    //TODO: 서버에 이름 저장
                     //TODO: 서버에 info1~4 서버저장
-                    //TODO: 게임에 접속했다는 key값 서버저장
+                    //TODO: 게임에 접속했다는 key값 서버저장?
 
                     intentToStart = new Intent(getApplicationContext(), Tab3GameStart.class);
+                    intentToStart.putExtra("name",name_info);
                     startActivity(intentToStart);
                 }
                 else{
