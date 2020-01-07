@@ -33,7 +33,10 @@ public class Tab3GameStart extends AppCompatActivity {
     Button check;
     Button howto;
     Check myCheck;
-    ImageView arrow0,arrow1,arrow2,arrow3,arrow4,arrow5,circle0,circle1,circle2,circle3,circle4,circle5;
+    ImageView arrow0,arrow1,arrow2,arrow3,arrow4,arrow5;
+
+    ImageView [] circles=new ImageView[6];
+
     TextView p_num_info,p_num_info2,info1,info2,info3,info4,infoText1,infoText2,infoText3,infoText4;
     ArrayList<Check> checks;
     MyTimer myTimer;
@@ -45,13 +48,20 @@ public class Tab3GameStart extends AppCompatActivity {
         //TODO: 게임시작할때 시간정보 서버에 저장
         //TODO: 게임 중이면(length==6) 앱 종료했다가 켜도 바로 게임화면으로 가도록->flag=0 만들기
 
+
+        //Id 로 view 불러옴
+        //info
         info1=(TextView)findViewById(R.id.info1); info2=(TextView)findViewById(R.id.info2); info3=(TextView)findViewById(R.id.info3); info4=(TextView)findViewById(R.id.info4);
         infoText1=(TextView)findViewById(R.id.infoText1); infoText2=(TextView)findViewById(R.id.infoText2); infoText3=(TextView)findViewById(R.id.infoText3); infoText4=(TextView)findViewById(R.id.infoText4);
 
         //화살표와 원
         arrow0=(ImageView)findViewById(R.id.arrow0); arrow1=(ImageView)findViewById(R.id.arrow1); arrow2=(ImageView)findViewById(R.id.arrow2); arrow3=(ImageView)findViewById(R.id.arrow3); arrow4=(ImageView)findViewById(R.id.arrow4); arrow5=(ImageView)findViewById(R.id.arrow5);
-        circle0=(ImageView)findViewById(R.id.circle0); circle1=(ImageView)findViewById(R.id.circle1); circle2=(ImageView)findViewById(R.id.circle2); circle3=(ImageView)findViewById(R.id.circle3); circle4=(ImageView)findViewById(R.id.circle4); circle5=(ImageView)findViewById(R.id.circle5);
+        int [] idArr={R.id.circle0,R.id.circle1,R.id.circle2,R.id.circle3,R.id.circle4,R.id.circle5};
+        for(int i=0;i<6;i++){
+            circles[i]=(ImageView)findViewById(idArr[i]);
+        }
 
+        //기타
         p_num_info=(TextView)findViewById(R.id.p_num_info);
         p_num_info2=(TextView)findViewById(R.id.p_num_info2);
         check=(Button)findViewById(R.id.check);
@@ -59,7 +69,7 @@ public class Tab3GameStart extends AppCompatActivity {
         howto=(Button)findViewById(R.id.howto);
 
 
-        myTimer=new MyTimer(1000,1000);
+        myTimer=new MyTimer(1000,1000);//6명 들어오기 전까지 대기, 6명 들어오면
 
         //TODO: 수정: myTimer 하나 더만들어서 시간마다 info가 보이게 바꿀것;
 
@@ -71,6 +81,9 @@ public class Tab3GameStart extends AppCompatActivity {
 
                 //TODO: 서버로부터 참가중인 사람들 정보(name, my,team,hunt) 불러와서 Check class에 저장, checks(arraylist)에 저장 //순서가 꼬리잡기와 같지 않게 조심할것
                 checks=new ArrayList<Check>();
+//                for(int i=0;i<6;i++){
+//                    checks.add(new Check(name,my,team,hunt))
+//                }
                 show();
 
             }
@@ -149,8 +162,14 @@ public class Tab3GameStart extends AppCompatActivity {
                 }
             }
             else{
+
                 myCheck=new Check();//TODO: 서버에서 불러온 내 정보 업데이트
+<<<<<<< HEAD
                 //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 info를 가져와서 세팅
+=======
+                //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 Info를 가져와서 InfoText1~4 세팅
+                setImage();
+>>>>>>> 57c9e6780cde1602e82e834cdef6a05e4261e032
 
             }
 
@@ -159,10 +178,16 @@ public class Tab3GameStart extends AppCompatActivity {
         @Override
         public void onFinish() {
             if (checknum==1){
+<<<<<<< HEAD
+=======
+
+>>>>>>> 57c9e6780cde1602e82e834cdef6a05e4261e032
                 p_num_info.setVisibility(View.GONE);
                 p_num_info2.setVisibility(View.GONE);
                 arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
-                circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
+                for(int i=0;i<6;i++){
+                    circles[i].setVisibility(View.VISIBLE);
+                }
                 info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
                 checknum=0;
             }
@@ -251,6 +276,22 @@ public class Tab3GameStart extends AppCompatActivity {
                 });
 
         builder.show();
+    }
+
+    void setImage(){
+        int my=myCheck.getMyIndex(),hunt=myCheck.getHuntIndex();
+        int top=my;
+        int num;
+        if(hunt>my)
+            num=hunt-my;
+        else
+            num=6+hunt-my;
+        if(num!=0) {
+            for (int i = 0; i < num; i++) {
+                circles[top].setBackgroundResource(R.drawable.circlenew);
+                top = (top + 1) % 6;
+            }
+        }
     }
 
 }
