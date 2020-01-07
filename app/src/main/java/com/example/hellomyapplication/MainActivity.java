@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Tab2GalleryAdapter galleryAdapter;
     RecyclerView recyclerView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,22 +158,13 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec ts3=tabHost1.newTabSpec("Tab Spec 3");
         ts3.setContent(R.id.special);
-        ts3.setIndicator("Special");
+        ts3.setIndicator("Special").setContent(new Intent(this,Tab3Main.class));
         tabHost1.addTab(ts3);
 
 
     }
 
 
-
-
-    //tab2필요한 부분
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) { //이게 뭘까?
-//
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
 
 
     /**
@@ -296,7 +288,10 @@ class Loader{
         return datas;
     }
 }
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 3c9486c1c3afb16a0a075dfaf853e5aed51d0a4c
