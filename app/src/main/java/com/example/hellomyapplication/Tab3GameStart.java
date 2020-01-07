@@ -12,6 +12,18 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +37,7 @@ public class Tab3GameStart extends AppCompatActivity {
     TextView p_num_info,p_num_info2,info1,info2,info3,info4,infoText1,infoText2,infoText3,infoText4;
     ArrayList<Check> checks;
     MyTimer myTimer;
+    ngrok addr = new ngrok();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,19 +63,8 @@ public class Tab3GameStart extends AppCompatActivity {
 
         //TODO: 수정: myTimer 하나 더만들어서 시간마다 info가 보이게 바꿀것;
 
-<<<<<<< HEAD
 
 
-
-=======
-        p_num_info.setVisibility(View.GONE);
-        p_num_info2.setVisibility(View.GONE);
-        arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
-        circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
-        info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
-
-
->>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
         check.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -85,6 +87,45 @@ public class Tab3GameStart extends AppCompatActivity {
 
     }//onCreate 끝
 
+    public void getorder(){
+        /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
+        String url = addr.geturl() + "/games";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);  //downloading!!
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for(int i=0;i<response.length();i++){
+                                JSONObject temp = response.getJSONObject(i);
+                                if(p_num<response.length()){
+                                    p_num += 1;
+                                }
+                            }
+                            easyToast(Integer.toString(response.length()));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        error.printStackTrace();
+                    }
+                }
+        );
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    void easyToast(String str){
+        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
+    }
+
     class MyTimer extends CountDownTimer
     {
         int checknum=0;
@@ -100,9 +141,8 @@ public class Tab3GameStart extends AppCompatActivity {
             if(flag==1){
                 //TODO: 서버에서 참가하는 사람수 업데이트->p_num;
                 //일단 하드코딩
-                p_num=6;
+                getorder();
                 p_num_info.setText(p_num+"");
-
                 if(p_num==6){
                     flag=0;
                     checknum=1;
@@ -111,10 +151,6 @@ public class Tab3GameStart extends AppCompatActivity {
             else{
                 myCheck=new Check();//TODO: 서버에서 불러온 내 정보 업데이트
                 //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 info를 가져와서 세팅
-<<<<<<< HEAD
-=======
-                //TODO: 업데이트된 myCheck를 통해 그림정보 업데이트
->>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
 
             }
 
@@ -123,16 +159,11 @@ public class Tab3GameStart extends AppCompatActivity {
         @Override
         public void onFinish() {
             if (checknum==1){
-                //TODO: 서버에서 index 조정해서 순서정해버리기 (DB내용 : 이름, 정보1-4, myIndex,teamIndex,huntIndex 세팅)
                 p_num_info.setVisibility(View.GONE);
                 p_num_info2.setVisibility(View.GONE);
                 arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
                 circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
                 info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
-<<<<<<< HEAD
-=======
-
->>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
                 checknum=0;
             }
             this.start();

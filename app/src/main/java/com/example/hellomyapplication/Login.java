@@ -93,17 +93,13 @@ public class Login extends AppCompatActivity {
     public void requestLogin(String ID, String PW){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
         String url = addr.geturl() + "/infos/login/local";
-
         //JSON형식으로 데이터 통신을 진행합니다!
-
+        easyToast(url);
         JSONObject testjson = new JSONObject();
         try {
             //입력해둔 edittext의 id와 pw값을 받아와 put해줍니다 : 데이터를 json형식으로 바꿔 넣어주었습니다.
-
             testjson.put("email", ID);
             testjson.put("password", PW);
-            final String jsonString = testjson.toString(); //완성된 json 포맷
-
             //이제 전송해볼까요?
             final RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,testjson, new Response.Listener<JSONObject>() {
@@ -115,7 +111,7 @@ public class Login extends AppCompatActivity {
                         //받은 json형식의 응답을 받아
                         JSONObject jsonObject = new JSONObject(response.toString());
 
-                        //key값에 따라 value값을 쪼개 받아옵니다.
+                        //key값에 따sho라 value값을 쪼개 받아옵니다.
                         String resultId = jsonObject.getString("approve_id");
                         String resultPassword = jsonObject.getString("approve_pw");
                         String resultKey = jsonObject.getString("_id");
