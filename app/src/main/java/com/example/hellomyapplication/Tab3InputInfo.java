@@ -27,7 +27,7 @@ public class Tab3InputInfo extends AppCompatActivity {
     String info_1,info_2,info_3,info_4,name_info;
     Button inputEnd;
     Intent intentToStart;
-    String key = getIntent().getStringExtra("key");
+    String key = ((MainActivity)MainActivity.context).globalkey;
     ngrok addr = new ngrok();
     int myturn;
     protected void onCreate(Bundle savedInstanceState) {

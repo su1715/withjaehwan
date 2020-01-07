@@ -124,8 +124,8 @@ public class Signup extends AppCompatActivity {
     void easyToast(String str){
         Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
     }
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
+
+
+

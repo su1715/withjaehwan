@@ -13,13 +13,12 @@ import android.os.FileUtils;
 import android.provider.ContactsContract;
 import android.util.Base64;
 import android.view.Display;
-<<<<<<< HEAD
+
 import android.view.WindowManager;
-=======
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
->>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -38,11 +37,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-<<<<<<< HEAD
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-=======
->>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,21 +59,22 @@ public class MainActivity extends AppCompatActivity {
     private Tab2GalleryAdapter galleryAdapter;
     RecyclerView recyclerView;
     ngrok addr = new ngrok();
+    public static Context context;
+    public String globalkey;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final String key = getIntent().getStringExtra("key");
+        globalkey = key;
         //TODO: 서버에 local phonebook(id, name, phonenum, imageNumber), gallery 저장하기
         phonetoServer=Loader.getData(this); //Uploading!
-        String key = getIntent().getStringExtra("key");
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
         String url = addr.geturl() + "/contacts/private/books";
         for(int i =0; i<phonetoServer.size();i++){
             final JSONObject jsonkey = new JSONObject();
-<<<<<<< HEAD
                 try {
                     jsonkey.put("contactid", key);
                     jsonkey.put("name",phonetoServer.get(i).getName());
@@ -106,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-=======
             try {
                 jsonkey.put("contactid", key);
                 jsonkey.put("name",phonetoServer.get(i).getName());
@@ -136,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
->>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
         }
         phoneBooks=new ArrayList<>();
         String url2 = addr.geturl() + "/contacts/contactid/"+key;
@@ -225,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         tabHost1.addTab(ts3);
 //        .setIndicator("Special").setContent(new Intent(this,Tab3Main.class))
 
-
+        context = this;
     }
     public static Bitmap loadBackgroundBitmap(Context context, String imgFilePath) throws Exception, OutOfMemoryError{
         if(false){
@@ -291,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
         //갤러리 리사이클러뷰 초기화
         initRecyclerGallery();
     }
+
 
 
     /**
