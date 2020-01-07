@@ -50,9 +50,19 @@ public class Tab3GameStart extends AppCompatActivity {
 
         //TODO: 수정: myTimer 하나 더만들어서 시간마다 info가 보이게 바꿀것;
 
+<<<<<<< HEAD
 
 
 
+=======
+        p_num_info.setVisibility(View.GONE);
+        p_num_info2.setVisibility(View.GONE);
+        arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
+        circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
+        info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
+
+
+>>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
         check.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -101,6 +111,10 @@ public class Tab3GameStart extends AppCompatActivity {
             else{
                 myCheck=new Check();//TODO: 서버에서 불러온 내 정보 업데이트
                 //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 info를 가져와서 세팅
+<<<<<<< HEAD
+=======
+                //TODO: 업데이트된 myCheck를 통해 그림정보 업데이트
+>>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
 
             }
 
@@ -115,6 +129,10 @@ public class Tab3GameStart extends AppCompatActivity {
                 arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
                 circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
                 info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d08036fe75384f556f81666d9915fbc62a83a04
                 checknum=0;
             }
             this.start();
