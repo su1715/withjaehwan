@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class Tab3GameStart extends AppCompatActivity {
     Button howto;
     int baseX,baseY;
     Check myCheck;
-
+    ImageView arrow0,arrow1,arrow2,arrow3,arrow4,arrow5,circle0,circle1,circle2,circle3,circle4,circle5;
     TextView p_num_info,p_num_info2,info1,info2,info3,info4,infoText1,infoText2,infoText3,infoText4;
     ArrayList<Check> checks;
 
@@ -36,6 +37,11 @@ public class Tab3GameStart extends AppCompatActivity {
 
         info1=(TextView)findViewById(R.id.info1); info2=(TextView)findViewById(R.id.info2); info3=(TextView)findViewById(R.id.info3); info4=(TextView)findViewById(R.id.info4);
         infoText1=(TextView)findViewById(R.id.infoText1); infoText2=(TextView)findViewById(R.id.infoText2); infoText3=(TextView)findViewById(R.id.infoText3); infoText4=(TextView)findViewById(R.id.infoText4);
+
+        //화살표와 원
+        arrow0=(ImageView)findViewById(R.id.arrow0); arrow1=(ImageView)findViewById(R.id.arrow1); arrow2=(ImageView)findViewById(R.id.arrow2); arrow3=(ImageView)findViewById(R.id.arrow3); arrow4=(ImageView)findViewById(R.id.arrow4); arrow5=(ImageView)findViewById(R.id.arrow5);
+        circle0=(ImageView)findViewById(R.id.circle0); circle1=(ImageView)findViewById(R.id.circle1); circle2=(ImageView)findViewById(R.id.circle2); circle3=(ImageView)findViewById(R.id.circle3); circle4=(ImageView)findViewById(R.id.circle4); circle5=(ImageView)findViewById(R.id.circle5);
+
         p_num_info=(TextView)findViewById(R.id.p_num_info);
         p_num_info2=(TextView)findViewById(R.id.p_num_info2);
         check=(Button)findViewById(R.id.check);
@@ -59,6 +65,9 @@ public class Tab3GameStart extends AppCompatActivity {
         //TODO: myCheck.getHunt()(잡아야하는사람) 의 info들 받아와서 info1,2,3,4에 setText()
         p_num_info.setVisibility(View.GONE);
         p_num_info2.setVisibility(View.GONE);
+        arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
+        circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
+
         info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
 
 

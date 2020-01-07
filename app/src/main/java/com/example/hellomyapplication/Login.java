@@ -32,8 +32,10 @@ public class Login extends AppCompatActivity {
     Button signup_loginpg;
     String emailText;
     String pwdText;
+    String key;
     Intent intent;
     Intent intent_signup;
+    ngrok addr = new ngrok();
     @Override
     protected void onCreate(Bundle savedInstanceState){
         //TODO: 권한 허용 하나로 묻기 (by수정)
@@ -70,16 +72,6 @@ public class Login extends AppCompatActivity {
                 emailText=email.getText().toString();
                 pwdText=pwd.getText().toString();
                 requestLogin(emailText, pwdText);
-//                Context context=view.getContext();
-//                if(true){ // TODO: if 조건= emailText와 pwdText가 서버에 저장된 정보와 일치하는지 확인
-//                    intent=new Intent(getApplicationContext(),MainActivity.class);
-//                    intent.putExtra("email",emailText);
-//                    intent.putExtra("password",pwdText);
-//                    startActivity(intent);
-//                }
-//                else{
-//                    Toast toast=Toast.makeText(context,"이메일 혹은 비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT);
-//                }
 
             }
 
@@ -100,7 +92,7 @@ public class Login extends AppCompatActivity {
 
     public void requestLogin(String ID, String PW){
         /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
-        String url = "http://e655d0bf.ngrok.io/infos/login/local";
+        String url = addr.geturl() + "/infos/login/local";
 
         //JSON형식으로 데이터 통신을 진행합니다!
 
@@ -110,7 +102,7 @@ public class Login extends AppCompatActivity {
 
             testjson.put("email", ID);
             testjson.put("password", PW);
-            String jsonString = testjson.toString(); //완성된 json 포맷
+            final String jsonString = testjson.toString(); //완성된 json 포맷
 
             //이제 전송해볼까요?
             final RequestQueue requestQueue = Volley.newRequestQueue(Login.this);
@@ -126,12 +118,12 @@ public class Login extends AppCompatActivity {
                         //key값에 따라 value값을 쪼개 받아옵니다.
                         String resultId = jsonObject.getString("approve_id");
                         String resultPassword = jsonObject.getString("approve_pw");
+                        String resultKey = jsonObject.getString("_id");
 
                         if(resultId.equals("OK") & resultPassword.equals("OK")){
                             Toast.makeText(getApplicationContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
                             intent=new Intent(getApplicationContext(),MainActivity.class);
-                            intent.putExtra("email",emailText);
-                            intent.putExtra("password",pwdText);
+                            intent.putExtra("key",resultKey);
                             startActivity(intent);
                             finish();
                         }else{

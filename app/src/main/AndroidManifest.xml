@@ -28,6 +28,8 @@
         <activity android:name=".Tab2FullScreenImageAdapter"></activity>
         <activity android:name=".Signup"></activity>
         <activity android:name=".Tab3Main"></activity>
+        <activity android:name=".Tab3GameStart"></activity>
+        <activity android:name=".Tab3InputInfo"></activity>
     </application>
 
 </manifest>

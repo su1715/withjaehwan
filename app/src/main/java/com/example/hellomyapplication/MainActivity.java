@@ -4,10 +4,18 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Base64;
+import android.view.Display;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -16,15 +24,33 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public ArrayList<PhoneBook> phoneBooks;
-
+    public ArrayList<PhoneBook> phonetoServer;
+    public ArrayList<PhoneBook> servertoPhone;
     private Tab2GalleryManager mGalleryManager;
     private RecyclerView recyclerGallery;
     private Tab2GalleryAdapter galleryAdapter;
+    RecyclerView recyclerView;
+    ngrok addr = new ngrok();
 
 
     @Override
@@ -33,6 +59,80 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //TODO: 서버에 local phonebook(id, name, phonenum, imageNumber), gallery 저장하기
+        phonetoServer=Loader.getData(this); //Uploading!
+        String key = getIntent().getStringExtra("key");
+        /*NGrok을 쓸거라 그때그때마다 바뀔꺼임!!!*/
+        String url = addr.geturl() + "/contacts/private/books";
+        for(int i =0; i<phonetoServer.size();i++){
+            final JSONObject jsonkey = new JSONObject();
+            try {
+                jsonkey.put("contactid", key);
+                jsonkey.put("name",phonetoServer.get(i).getName());
+                jsonkey.put("phonenumber",phonetoServer.get(i).getNumber());
+//                    Bitmap temp = loadBackgroundBitmap(this,phonetoServer.get(i).getImageNumber());
+                final RequestQueue requestQueue = Volley.newRequestQueue(this);
+                final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,jsonkey, new Response.Listener<JSONObject>() {
+                    //데이터 전달을 끝내고 이제 그 응답을 받을 차례입니다.
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //서버로 데이터 전달 및 응답 받기에 실패한 경우 아래 코드가 실행됩니다.
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                requestQueue.add(jsonObjectRequest);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        phoneBooks=new ArrayList<>();
+        String url2 = addr.geturl() + "/contacts/contactid/"+key;
+        RequestQueue requestQueue = Volley.newRequestQueue(this);  //downloading!!
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url2,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try{
+                            // Loop through the array elements
+                            for(int i=0;i<response.length();i++){
+                                JSONObject temp = response.getJSONObject(i);
+                                String name = temp.getString("name");
+                                String phonenumber = temp.getString("phonenumber");
+                                phoneBooks.add(new PhoneBook(Integer.toString(i), name, phonenumber, R.drawable.button_background));
+                                Tab1TextAdapter adapter = new Tab1TextAdapter(phoneBooks) ;
+                                recyclerView.setAdapter(adapter) ;
+                            }
+
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        error.printStackTrace();
+                    }
+                }
+        );
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(jsonArrayRequest);
+
 
         TabHost tabHost1=(TabHost)findViewById(R.id.tabHost1);
         tabHost1.setup();
@@ -40,31 +140,26 @@ public class MainActivity extends AppCompatActivity {
         TabHost.TabSpec ts1=tabHost1.newTabSpec("Tab Spec 1");
         ts1.setContent(R.id.phonebook);
 
-        phoneBooks=new ArrayList<>();
-//        phoneBooks=Loader.getData(this); TODO: 서버에서 phonebook 정보 가져오기(id, name, phonenum, imageNumber)
-        //일단은 하드코딩
-        phoneBooks.add(new PhoneBook("0","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("1","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("2","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("3","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("4","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("5","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("6","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("7","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("8","박수정","010-7183-8939",R.drawable.button_background));
-        phoneBooks.add(new PhoneBook("9","박수정","010-7183-8939",R.drawable.button_background));
-
-
-
 
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
-        RecyclerView recyclerView = findViewById(R.id.recycler1) ;
+        recyclerView = findViewById(R.id.recycler1) ;
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), 1));
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
 
         // 리사이클러뷰에 Tab1TextAdapter 객체 지정.
         Tab1TextAdapter adapter = new Tab1TextAdapter(phoneBooks) ;
         recyclerView.setAdapter(adapter) ;
+
+        Button fuckingButton = (Button)findViewById(R.id.fuckingbutton);
+        fuckingButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getApplicationContext(),Tab3Main.class);
+                startActivity(intent);
+            }
+
+        });
+
 
 
         ts1.setIndicator("PhoneBook");
@@ -81,11 +176,52 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec ts3=tabHost1.newTabSpec("Tab Spec 3");
         ts3.setContent(R.id.special);
-        ts3.setIndicator("Special").setContent(new Intent(this,Tab3Main.class));
+        ts3.setIndicator("Special");
         tabHost1.addTab(ts3);
+//        .setIndicator("Special").setContent(new Intent(this,Tab3Main.class))
 
 
     }
+    public static Bitmap loadBackgroundBitmap(Context context, String imgFilePath) throws Exception, OutOfMemoryError{
+        if(false){
+            throw new FileNotFoundException("background-image file not found : " + imgFilePath);
+        }
+
+        Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        int displayWidth = display.getWidth();
+        int displayHeight = display.getHeight();
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imgFilePath, options);
+
+        float widthScale = options.outWidth / displayWidth;
+        float heightScale = options.outHeight / displayHeight;
+        float scale = widthScale > heightScale ? widthScale : heightScale;
+
+        if (scale >= 8){
+            options.inSampleSize = 8;
+        }else if (scale >= 6){
+            options.inSampleSize = 6;
+        }else if (scale >= 4){
+            options.inSampleSize = 4;
+        }else if (scale >= 2){
+            options.inSampleSize = 2;
+        }else{
+            options.inSampleSize = 1;
+        }
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imgFilePath, options);
+    } //Url을 Bitmap으로!
+    private String getStringFromBitmap(Bitmap bitmapPicture) {
+        String encodedImage;
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        bitmapPicture.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+        return encodedImage;
+    } //bitmap을 Bytecode로 쪼개기
 
 
 
@@ -96,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
     private void initLayout() {
 
         recyclerGallery = (RecyclerView) findViewById(R.id.recyclerGallery);
+    }
+    void easyToast(String str){
+        Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
     }
 
 
