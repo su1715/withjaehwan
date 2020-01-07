@@ -5,4 +5,8 @@ public class ngrok {
     public String geturl() {
         return url;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5

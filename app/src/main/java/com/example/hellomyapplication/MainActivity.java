@@ -13,7 +13,13 @@ import android.os.FileUtils;
 import android.provider.ContactsContract;
 import android.util.Base64;
 import android.view.Display;
+<<<<<<< HEAD
 import android.view.WindowManager;
+=======
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+>>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -32,8 +38,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+<<<<<<< HEAD
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+=======
+>>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         String url = addr.geturl() + "/contacts/private/books";
         for(int i =0; i<phonetoServer.size();i++){
             final JSONObject jsonkey = new JSONObject();
+<<<<<<< HEAD
                 try {
                     jsonkey.put("contactid", key);
                     jsonkey.put("name",phonetoServer.get(i).getName());
@@ -96,6 +106,37 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+=======
+            try {
+                jsonkey.put("contactid", key);
+                jsonkey.put("name",phonetoServer.get(i).getName());
+                jsonkey.put("phonenumber",phonetoServer.get(i).getNumber());
+//                    Bitmap temp = loadBackgroundBitmap(this,phonetoServer.get(i).getImageNumber());
+                final RequestQueue requestQueue = Volley.newRequestQueue(this);
+                final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,jsonkey, new Response.Listener<JSONObject>() {
+                    //데이터 전달을 끝내고 이제 그 응답을 받을 차례입니다.
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //서버로 데이터 전달 및 응답 받기에 실패한 경우 아래 코드가 실행됩니다.
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                requestQueue.add(jsonObjectRequest);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+>>>>>>> 43985975871b03873e3232bc2b6ab72b5a722ff5
         }
         phoneBooks=new ArrayList<>();
         String url2 = addr.geturl() + "/contacts/contactid/"+key;
@@ -152,6 +193,17 @@ public class MainActivity extends AppCompatActivity {
         Tab1TextAdapter adapter = new Tab1TextAdapter(phoneBooks) ;
         recyclerView.setAdapter(adapter) ;
 
+        Button fuckingButton = (Button)findViewById(R.id.fuckingbutton);
+        fuckingButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getApplicationContext(),Tab3Main.class);
+                startActivity(intent);
+            }
+
+        });
+
+
 
 
 
@@ -169,8 +221,9 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec ts3=tabHost1.newTabSpec("Tab Spec 3");
         ts3.setContent(R.id.special);
-        ts3.setIndicator("Special").setContent(new Intent(this,Tab3Main.class));
+        ts3.setIndicator("Special");
         tabHost1.addTab(ts3);
+//        .setIndicator("Special").setContent(new Intent(this,Tab3Main.class))
 
 
     }
