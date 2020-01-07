@@ -2,6 +2,7 @@ package com.example.hellomyapplication;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,26 +15,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
 public class Tab3GameStart extends AppCompatActivity {
     int flag=1;
     int p_num=0;
     Button check;
     Button howto;
-    int baseX,baseY;
     Check myCheck;
     ImageView arrow0,arrow1,arrow2,arrow3,arrow4,arrow5,circle0,circle1,circle2,circle3,circle4,circle5;
     TextView p_num_info,p_num_info2,info1,info2,info3,info4,infoText1,infoText2,infoText3,infoText4;
     ArrayList<Check> checks;
+    MyTimer myTimer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab3_gamestart);
         //TODO: 게임시작할때 시간정보 서버에 저장
-        //TODO: 게임 중이면 앱 종료했다가 켜도 바로 게임화면으로 가도록->flag=0 만들기
-        //TODO: 10초마다 내정보 업데이트!!!!!!!!!!!!
+        //TODO: 게임 중이면(length==6) 앱 종료했다가 켜도 바로 게임화면으로 가도록->flag=0 만들기
 
         info1=(TextView)findViewById(R.id.info1); info2=(TextView)findViewById(R.id.info2); info3=(TextView)findViewById(R.id.info3); info4=(TextView)findViewById(R.id.info4);
         infoText1=(TextView)findViewById(R.id.infoText1); infoText2=(TextView)findViewById(R.id.infoText2); infoText3=(TextView)findViewById(R.id.infoText3); infoText4=(TextView)findViewById(R.id.infoText4);
@@ -48,30 +45,17 @@ public class Tab3GameStart extends AppCompatActivity {
         check.setVisibility(View.GONE);
         howto=(Button)findViewById(R.id.howto);
 
-        while(flag==1){
-            //TODO: 1초마다 로그인한 사람정보, 로그인한 사람 수 정보 p_num에 받아오기
-            p_num=6;//일단 하드코딩으로 사람 수 설정
-            p_num_info.setText(p_num+"");
 
-            //TODO: 1초 멈추는 메소드 걸것.(수정)
-            if(p_num==6){
-                flag=0;
-            }
-        }
-        //gamestart
-        myCheck=new Check();//서버에서 불러와 넣을 것
-        //TODO: 서버에서 index 조정해서 순서정해버리기 (DB내용 : 이름, 정보1-4, myIndex,teamIndex,huntIndex 세팅)
-        //TODO: Check class의 myCheck에 서버로부터 이름을 통해 받은 내 정보 저장
-        //TODO: myCheck.getHunt()(잡아야하는사람) 의 info들 받아와서 info1,2,3,4에 setText()
+        myTimer=new MyTimer(1000,1000);
+
+        //TODO: 수정: myTimer 하나 더만들어서 시간마다 info가 보이게 바꿀것;
+
         p_num_info.setVisibility(View.GONE);
         p_num_info2.setVisibility(View.GONE);
         arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
         circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
-
         info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
 
-
-        //TODO: myCheck의 hunt 정보 불러와서 infoText1-4에 각각 세팅, 시간지날때마다 visible로 바꾸기 (기본값 View.GONE)
 
         check.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -91,11 +75,57 @@ public class Tab3GameStart extends AppCompatActivity {
             }
         });
 
-        //TODO: 원그리기, 화살표 그리기(수정)
 
-        //TODO: 일정시간마다 서버 시간 확인해서 1시간마다 정보 추가로 알려주기( textview visible로 바꾸기 )
 
     }//onCreate 끝
+
+    class MyTimer extends CountDownTimer
+    {
+        int checknum=0;
+        public MyTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+            this.start();
+
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if(flag==1){
+                //TODO: 서버에서 참가하는 사람수 업데이트->p_num;
+                //일단 하드코딩
+                p_num=6;
+                p_num_info.setText(p_num+"");
+
+                if(p_num==6){
+                    flag=0;
+                    checknum=1;
+                }
+            }
+            else{
+                myCheck=new Check();//TODO: 서버에서 불러온 내 정보 업데이트
+                //TODO: myCheck.getHuntindex() 를 myindex로 가지고 있는 사람의 info를 가져와서 세팅
+                //TODO: 업데이트된 myCheck를 통해 그림정보 업데이트
+
+            }
+
+        }
+
+        @Override
+        public void onFinish() {
+            if (checknum==1){
+                //TODO: 서버에서 index 조정해서 순서정해버리기 (DB내용 : 이름, 정보1-4, myIndex,teamIndex,huntIndex 세팅)
+                p_num_info.setVisibility(View.GONE);
+                p_num_info2.setVisibility(View.GONE);
+                arrow0.setVisibility(View.VISIBLE);arrow1.setVisibility(View.VISIBLE);arrow2.setVisibility(View.VISIBLE);arrow3.setVisibility(View.VISIBLE);arrow4.setVisibility(View.VISIBLE);arrow5.setVisibility(View.VISIBLE);
+                circle0.setVisibility(View.VISIBLE);circle1.setVisibility(View.VISIBLE);circle2.setVisibility(View.VISIBLE);circle3.setVisibility(View.VISIBLE);circle4.setVisibility(View.VISIBLE);circle5.setVisibility(View.VISIBLE);
+                info1.setVisibility(View.VISIBLE);infoText1.setVisibility(View.VISIBLE);
+
+                checknum=0;
+            }
+            this.start();
+        }
+    }
 
 
     void show(){// 사냥할 사람들의 목록 Dialog로 보여줌
@@ -138,7 +168,7 @@ public class Tab3GameStart extends AppCompatActivity {
                             }
 
                             else if(myCheck.getMyIndex()==isHunted.getHuntIndex()) {//잡힌경우
-                                //TODO: 정보수정, 상대방에게 내가 잡혔다는 것을 알려야함
+                                // 정보수정, 상대방에게 내가 잡혔다는 것을 알려야함
                                 myCheck.setTeamIndex(isHunted.getTeamIndex());
                                 //TODO: 서버에게 isHunted.getMyIndex()를 myindex로 가지는 사람. 그사람의 huntindex 나와 같도록 바꾸라고 지시
                                 //TODO: 그사람과 팀이 같던 사람도 모두 huntindex 바꾸라고 지시
@@ -149,7 +179,6 @@ public class Tab3GameStart extends AppCompatActivity {
                              }
 
 
-                            // TODO: 본인정보(myCheck)에 따라 그림 업데이트
                         }
                     }
                 });
@@ -163,14 +192,7 @@ public class Tab3GameStart extends AppCompatActivity {
         builder.show();
     }
 
-    void makeCircle(int p_num){
-        for(int i=0;i<p_num;i++){
-            double x=baseX+100*cos(Math.PI*i/p_num);
-            double y=baseY+100*sin(Math.PI*i/p_num);
 
-
-        }
-    }
     void show_dialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("AlertDialog Title");
@@ -189,6 +211,12 @@ public class Tab3GameStart extends AppCompatActivity {
     }
 
 }
+
+
+
+
+
+
 class Check{
     private String name;
     private int myIndex;
